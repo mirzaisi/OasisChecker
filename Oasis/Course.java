@@ -1,4 +1,4 @@
-package com.oasischecker.Oasis;
+package OasisChecker.Oasis;
 
 import java.io.EOFException;
 import java.io.File;
@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 

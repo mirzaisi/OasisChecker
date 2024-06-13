@@ -1,10 +1,10 @@
-package com.oasischecker;
+package OasisChecker;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.openqa.selenium.WebDriver;
-import com.oasischecker.Oasis.OasisSession;
+import OasisChecker.Oasis.OasisSession;
 
 
 public class Main {

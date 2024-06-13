@@ -1,4 +1,4 @@
-package com.oasischecker;
+package OasisChecker;
 
 import java.util.ArrayList;
 import java.util.Properties;
