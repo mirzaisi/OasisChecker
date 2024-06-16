@@ -1,17 +1,13 @@
-package OasisChecker;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.openqa.selenium.WebDriver;
-import OasisChecker.Oasis.OasisSession;
+import Oasis.OasisSession;
 
 
 public class Main {
-
-    // !hide these 
-    // CREDENTIALS
     
+    // CREDENTIALS
     // OASIS
     private static final String oasisID = "";
     private static final String oasisPassword = "";
@@ -22,12 +18,13 @@ public class Main {
     private static final String senderPassword = "";
     private static final String receiverAdress = "";
 
-    public final static int loopSleepTime = 15 * (60 * 1000); // 15 minutes in millis
+    public final static int loopSleepTime = 20 * (60 * 1000); // 20 minutes in millis
 
     public static void main(String[] args) throws IOException{
-
+        
         boolean pausedBot = false;
         while(!pausedBot) {
+            WebServer.startWebServer();
             runBot();
             System.out.println("Finished loop, sleeping for 15 minutes...");  
             loopSleep(loopSleepTime);          

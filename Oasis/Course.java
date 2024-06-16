@@ -1,4 +1,4 @@
-package OasisChecker.Oasis;
+package Oasis;
 
 import java.io.EOFException;
 import java.io.File;
@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class Course implements Serializable{
+public class Course implements Serializable {
     private String courseCode;
     private String courseName;
     private String letterGrade;
     private ArrayList<String> courseGrades;
 
-    final static String serializedFilePathRoot = "oasis-checker\\src\\main\\java\\com\\oasischecker\\Serialized\\"; //TODO put a dir path
+    final static String serializedFilePathRoot = "./src/main/java/Serialized/";
 
     public Course(String courseCode, String courseName, String letterGrade, ArrayList<String> courseGrades) {
         this.courseCode = courseCode;
@@ -28,13 +30,13 @@ public class Course implements Serializable{
     }
 
     public String getFormattedCourseCode() {
-        return this.getCourseCode().replaceAll("-", "_").replaceAll("\s+", "");
+        String formattedCourseCode = this.getCourseCode().replaceAll("-", "_").replaceAll("\s+", "") + ".ser";
+        return formattedCourseCode; 
     }
-    
+
     public String getCourseCode() {
         return courseCode;
     }
-
 
     public void setCourseCode(String courseCode) {
         this.courseCode = courseCode;
@@ -44,26 +46,21 @@ public class Course implements Serializable{
         return courseName;
     }
 
-
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
-
 
     public String getLetterGrade() {
         return letterGrade;
     }
 
-
     public void setLetterGrade(String letterGrade) {
         this.letterGrade = letterGrade;
     }
 
-
     public ArrayList<String> getCourseGrades() {
         return courseGrades;
     }
-
 
     public void setCourseGrades(ArrayList<String> courseGrades) {
         this.courseGrades = courseGrades;
@@ -74,25 +71,27 @@ public class Course implements Serializable{
         ArrayList<String> courseCodesToAddToMail = new ArrayList<>();
 
         for (Course newCourse : newCourses) {
-            for (Course existingCourse : existingCourses) {    
+            for (Course existingCourse : existingCourses) {
                 if (existingCourse.getCourseCode().equals(newCourse.getCourseCode())) {
-                    if(Course.isChangedCourseGrade(existingCourse.getCourseGrades(), newCourse.getCourseGrades()) || Course.isChangedCourseLetterGrade(existingCourse.getLetterGrade(), newCourse.getLetterGrade())) {
-                        System.out.println("Change in course " + newCourse.getCourseCode() + 
-                        "/" + newCourse.getCourseName() + " detected. Appended it to email content.");
+                    if (Course.isChangedCourseGrade(existingCourse.getCourseGrades(), newCourse.getCourseGrades())
+                            || Course.isChangedCourseLetterGrade(existingCourse.getLetterGrade(),
+                                    newCourse.getLetterGrade())) {
+                        System.out.println("Change in course " + newCourse.getCourseCode() +
+                                "/" + newCourse.getCourseName() + " detected. Appended it to email content.");
                         courseCodesToAddToMail.add(newCourse.getCourseCode());
                     }
                 }
             }
 
             // if there is a grade section but all grades are empty, don't send it
-            if(newCourse.isEmptyCourseGrades()) {;
+            if (newCourse.isEmptyCourseGrades()) {
+                ;
                 courseCodesToAddToMail.remove(newCourse.getCourseCode());
             }
-            
+
             newCourse.serialize();
         }
 
-       
         return courseCodesToAddToMail;
     }
 
@@ -104,7 +103,7 @@ public class Course implements Serializable{
         }
 
         return true;
-        
+
     }
 
     public static boolean isChangedCourseLetterGrade(String existingCourseLetterGrade, String newCourseLetterGrade) {
@@ -115,31 +114,31 @@ public class Course implements Serializable{
 
         return isChangedCourseLetterGrade;
     }
-    public static boolean isChangedCourseGrade(ArrayList<String> existingCourseGrades, ArrayList<String> newCourseGrades) {
+
+    public static boolean isChangedCourseGrade(ArrayList<String> existingCourseGrades,
+            ArrayList<String> newCourseGrades) {
         boolean isChangedCourseGrade = false;
         if (existingCourseGrades.size() != newCourseGrades.size()) {
             isChangedCourseGrade = true;
         } else {
-            for (int i = 0 ; i < existingCourseGrades.size() ; i++) {
+            for (int i = 0; i < existingCourseGrades.size(); i++) {
                 if (!existingCourseGrades.get(i).equals(newCourseGrades.get(i))) {
                     isChangedCourseGrade = true;
                 }
             }
-        }  
+        }
 
         return isChangedCourseGrade;
     }
 
-
-     public static ArrayList<String> loadCourseObjects(List<WebElement> courses) {
+    public static ArrayList<String> loadCourseObjects(List<WebElement> courses) {
         System.out.println("Deserializing old course objects...");
         ArrayList<String> courseCodesToAddToMail = null;
         ArrayList<Course> existingCourses = Course.deserialize();
 
         ArrayList<Course> newCourses = createCourseObjects(courses);
-                
+
         courseCodesToAddToMail = compareCourses(existingCourses, newCourses);
-        
 
         return courseCodesToAddToMail;
     }
@@ -147,28 +146,34 @@ public class Course implements Serializable{
     private static ArrayList<Course> createCourseObjects(List<WebElement> courses) {
         ArrayList<Course> newCourses = new ArrayList<>();
         for (WebElement course : courses) {
-            String courseCode = course.findElement(By.cssSelector("tr.border-bottom-10.green-table > td:nth-child(1)")).getText();
-            String courseName = course.findElement(By.cssSelector("tr.border-bottom-10.green-table > td:nth-child(2)")).getText();
-            String letterGrade = course.findElement(By.cssSelector("tr.border-bottom-10.green-table > td:nth-child(6) > i")).getText();
+            String courseCode = course.findElement(By.cssSelector("tr.border-bottom-10.green-table > td:nth-child(1)"))
+                    .getText();
+            String courseName = course.findElement(By.cssSelector("tr.border-bottom-10.green-table > td:nth-child(2)"))
+                    .getText();
+            String letterGrade = course
+                    .findElement(By.cssSelector("tr.border-bottom-10.green-table > td:nth-child(6) > i")).getText();
             ArrayList<String> gradesAsString = new ArrayList<>();
 
             Course courseObject = new Course(courseCode, courseName, letterGrade, gradesAsString);
             newCourses.add(courseObject);
 
-            List<WebElement> gradesFromOasis = course.findElements(By.cssSelector("tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td"));
-            for(WebElement grade: gradesFromOasis) {
+            List<WebElement> gradesFromOasis = course
+                    .findElements(By.cssSelector("tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td"));
+            for (WebElement grade : gradesFromOasis) {
                 gradesAsString.add(grade.getText());
             }
-            
+
         }
 
         return newCourses;
-        
+
     }
 
     public boolean serialize() {
-        String serializedFilePath = serializedFilePathRoot + this.getFormattedCourseCode() + ".ser";
-        try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(serializedFilePath))) {
+        Path serializedFilePath = Paths.get(serializedFilePathRoot, this.getFormattedCourseCode());
+        File serializedFile = new File(serializedFilePath.toString());
+        serializedFile.getParentFile().mkdirs();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(serializedFile))) {
             objectOutputStream.writeObject(this);
             return true;
         } catch (Exception e) {
@@ -183,24 +188,24 @@ public class Course implements Serializable{
         File serFileDir = new File(serializedFilePathRoot);
         File[] serFiles = serFileDir.listFiles();
         if (serFiles != null) {
-            for(File serFile : serFiles) {
+            for (File serFile : serFiles) {
                 try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(serFile))) {
                     Course deserializedCourse = null;
                     while ((deserializedCourse = (Course) objectInputStream.readObject()) != null) {
                         deserializedCourses.add(deserializedCourse);
                     }
-                    
+
                 } catch (EOFException eofe) {
                     continue;
-                } 
-                
+                }
+
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-    
+
             }
         }
-        
+
         return deserializedCourses;
     }
 }

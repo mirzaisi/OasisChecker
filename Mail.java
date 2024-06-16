@@ -1,5 +1,3 @@
-package OasisChecker;
-
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.mail.Message;

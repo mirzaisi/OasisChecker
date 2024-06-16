@@ -1,4 +1,4 @@
-package OasisChecker.Oasis;
+package Oasis;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -6,14 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import OasisChecker.Main;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.JavascriptExecutor;
 
 public class OasisSession {
     private final WebDriver webDriver;
@@ -39,7 +38,7 @@ public class OasisSession {
     }
 
     private void openOasisAndLogin() {
-        System.out.println("Logging in to Oasis...");
+        System.out.println("Logging into Oasis...");
         webDriver.get("https://oasis.izmirekonomi.edu.tr/login");
         passFirstLoginPage();
         webDriverSleep(2);
@@ -76,13 +75,20 @@ public class OasisSession {
             webDriver.get("https://oasis.izmirekonomi.edu.tr/studentgrades/grades");
         } catch (TimeoutException te) {
             System.out.println("Cannot login to Oasis at this time, sleeping...");
-            Main.loopSleep(Main.loopSleepTime);
+            try {
+                Thread.sleep(15 * 60 * 1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
         }
-      
+        
         // click details buttons to expand table
         List<WebElement> detailsButtons = webDriver.findElements(By.cssSelector("table > tbody > tr > td:nth-child(7) > button"));
         for (WebElement detailsButton : detailsButtons) {
-            detailsButton.click();
+            JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+            executor.executeScript("arguments[0].click();", detailsButton);
+              
         }
 
         List<WebElement> courses = webDriver.findElements(By.cssSelector("table.table.table-sm.table-bordered.table-striped.main-table > tbody"));
@@ -96,10 +102,10 @@ public class OasisSession {
     }
 
     public static WebDriver startWebDriver() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new");
-        WebDriver webDriver = new ChromeDriver(options);
+    
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments("--headless");
+        WebDriver webDriver = new FirefoxDriver(options);
 
         return webDriver;
     }
