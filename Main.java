@@ -24,7 +24,7 @@ public class Main {
         
         boolean pausedBot = false;
         while(!pausedBot) {
-            WebServer.startWebServer();
+            
             runBot();
             System.out.println("Finished loop, sleeping for 15 minutes...");  
             loopSleep(loopSleepTime);          
