@@ -1,10 +1,12 @@
 # OasisChecker
- Checks OASIS for new grades, sends email if there are any.
-OASIS is the student information system used in Izmir University of Economics
+ This bot was written in Java and its main purpose is to check OASIS for new grades, and send email if there are any.
+OASIS is the student information system used in Izmir University of Economics.
 
-It needs the geckodriver and Firefox to run, chromedriver and Chrome can also be used with a small change in the code.
+It needs the _geckodriver_ and _Firefox_ to run but _chromedriver_ and _Chrome_ can also be used with a small change in the _Oasis.OasisSession.startWebDriver()_ method.
 
-Since the code needs to constanly run to check OASIS, it is better to run it on a server.
+Since the code needs to constanly run to check OASIS, it is better to run it on a **server**.
+
+**Maven dependencies:**
 
     <dependencies>
  
