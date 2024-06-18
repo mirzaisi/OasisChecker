@@ -1,5 +1,6 @@
 # OasisChecker
- Checks OASIS for new grades, sends email if there are any
+Checks OASIS for new grades, sends email if there are any
+OASIS is the student information system used in Izmir University of Economics
 
 It needs the geckodriver and Firefox to run, chromedriver and Chrome can also be used with a small change in the code.
 
