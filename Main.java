@@ -22,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException{
         
-        boolean pausedBot = false;
+        boolean pausedBot = false; // pausing the bot with an email feature will be added
         while(!pausedBot) {
             
             runBot();
